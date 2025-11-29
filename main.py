@@ -15,16 +15,17 @@ def convert_currency(amount, from_currency, to_currency):
     url = f"https://open.er-api.com/v6/latest/{from_currency}"
     data = requests.get(url).json()
 
-    if str(to_currency) not in data:
-        coverted_currency = "conversion data not available."
+    if to_currency not in data["rates"]:
+        results = "conversion data not available."
     else:
         rate = data["rates"][to_currency]
         coverted_currency = float(amount) * rate
-
-        print(f"{amount} {from_currency} is {coverted_currency} {to_currency}")
+        results = f"{amount} {from_currency} is {coverted_currency} {to_currency}"
+        
+        print(results)
 
     with open(REQUEST_PATH, "w") as request_file:
-        request_file.write(str(coverted_currency))
+        request_file.write(str(results))
 
 
 class Handler(FileSystemEventHandler):
